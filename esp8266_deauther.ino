@@ -174,7 +174,6 @@ void light_sleep(){
    wifi_set_opmode_current(NULL_MODE);
    wifi_fpm_set_sleep_type(LIGHT_SLEEP_T); // set sleep type, the above    posters wifi_set_sleep_type() didnt seem to work for me although it did let me compile and upload with no errors 
    wifi_fpm_open(); // Enables force sleep
-   //gpio_pin_wakeup_enable(GPIO_ID_PIN(2), GPIO_PIN_INTR_LOLEVEL); // GPIO_ID_PIN(2) corresponds to GPIO2 on ESP8266-01 , GPIO_PIN_INTR_LOLEVEL for a logic low.
    //wifi_fpm_set_wakeup_cb(fpm_wakup_cb_func1); // Set wakeup callback
    wifi_fpm_do_sleep(0xFFFFFFF); // Sleep for longest possible time
  }
@@ -189,18 +188,18 @@ void loop() {
        scan.update();   // run scan
        ssids.update();  // run random mode, if enabled
      }
-     
-     if(!attack.isRunning() && displayUI.hibernation) //For energy saving, hibernation
+    else if(!attack.isRunning() && displayUI.hibernation) //For energy saving, hibernation
     {
       if(led.ledenabled)
-      {
         led.setMode(HIBERNATE);
-      }
-        light_sleep();
-    }
-     if(!AP_HIDDEN)
-     wifiUpdate();    // manage access point
 
+        WiFi.forceSleepBegin();
+        WiFi.mode(WIFI_OFF);
+        //light_sleep();
+    }
+
+    if(!AP_HIDDEN)
+     wifiUpdate();    // manage access point
 
     // auto-save
     if (settings.getAutosaveSettings().enabled

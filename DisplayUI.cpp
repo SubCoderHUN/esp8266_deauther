@@ -677,10 +677,11 @@ void DisplayUI::draw() {
                 
                 if(hibernation)
                 {
-                  hibernation = false;
                   wifi_set_sleep_type(NONE_SLEEP_T);
                   WiFi.forceSleepWake();
+                  WiFi.mode(WIFI_STA);
                   WiFi.begin();
+                  hibernation = false;
                 } 
                 break;
             }
@@ -802,7 +803,7 @@ void DisplayUI::drawIntro() {
 void DisplayUI::drawClock() {
   
    if(!attack.isRunning() && !hibernation) //For energy saving, hibernation
-    {
+    { 
         hibernation = true;
     }
     String clockTime = String(clockHour);
